@@ -1,5 +1,8 @@
 # Default ignored files
 /shelf/
 /workspace.xml
+/vcs.xml
+/modules.xml
+/Mario_game.iml
 # Editor-based HTTP Client requests
 /httpRequests/
