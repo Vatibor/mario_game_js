@@ -1,10 +1,16 @@
+// import { platform } from './assets/platform.png'
+
+
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 
-canvas.width = window.innerWidth-10
-canvas.height = window.innerHeight-10
+canvas.width = 1024
+canvas.height = 576
 
 const gravity = 0.5
+
+const image = new Image()
+image.src = './assets/platform.png'
 
 class Player {
     constructor() {
@@ -35,24 +41,28 @@ class Player {
 }
 
 class Platform {
-    constructor({x, y}) {
+    constructor({x, y, image}) {
         this.position = {
             x,
             y
         }
-
-        this.width = 200
-        this.height = 20
+        this.image = image
+        this.width = image.width
+        this.height = image.height
     }
 
     draw() {
-        c.fillStyle = 'blue'
-        c.fillRect(this.position.x, this.position.y, this.width, this.height)
+        c.drawImage(image, this.position.x, this.position.y)
+        // c.fillStyle = 'blue'
+        // c.fillRect(this.position.x, this.position.y, this.width, this.height)
     }
 }
 
+
+
 const player = new Player()
-const platforms = [new Platform({x:200, y:100}), new Platform({x: 500, y: 200})]
+const platforms = [new Platform({x:-1, y:470, image}), new Platform({x: image.width-3, y: 470, image})]
+
 
 const keys = {
     right: {
@@ -66,11 +76,12 @@ const keys = {
 
 function animate() {
     requestAnimationFrame(animate)
-    c.clearRect(0,0, canvas.width, canvas.height)
-    player.update()
+    c.fillStyle = 'white'
+    c.fillRect(0,0, canvas.width, canvas.height)
     platforms.forEach(platform => {
         platform.draw()
     })
+    player.update()
 
     if (keys.right.pressed && player.position.x < 400) {
         player.velocity.x = 5
