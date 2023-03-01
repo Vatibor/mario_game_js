@@ -1,5 +1,7 @@
 // import { platform } from './assets/platform.png'
-
+const platform = './assets/platform.png'
+const background = './assets/background.png'
+const hills = './assets/hills.png'
 
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
@@ -8,9 +10,6 @@ canvas.width = 1024
 canvas.height = 576
 
 const gravity = 0.5
-
-const image = new Image()
-image.src = './assets/platform.png'
 
 class Player {
     constructor() {
@@ -52,17 +51,46 @@ class Platform {
     }
 
     draw() {
-        c.drawImage(image, this.position.x, this.position.y)
+        c.drawImage(this.image, this.position.x, this.position.y)
         // c.fillStyle = 'blue'
         // c.fillRect(this.position.x, this.position.y, this.width, this.height)
     }
 }
 
+class GenericObject {
+    constructor({x, y, image}) {
+        this.position = {
+            x,
+            y
+        }
+        this.image = image
+        this.width = image.width
+        this.height = image.height
+    }
 
+    draw() {
+        c.drawImage(this.image, this.position.x, this.position.y)
+        // c.fillStyle = 'blue'
+        // c.fillRect(this.position.x, this.position.y, this.width, this.height)
+    }
+}
+
+function createImage(imageSrc) {
+    const image = new Image()
+    image.src = imageSrc
+    return image
+}
+
+const platformImg = createImage(platform)
 
 const player = new Player()
-const platforms = [new Platform({x:-1, y:470, image}), new Platform({x: image.width-3, y: 470, image})]
+const platforms = [new Platform({x:-1, y:470, image: platformImg}),
+    new Platform({x: platformImg.width-3, y: 470, image: platformImg})]
 
+const genericObjects = [
+    new GenericObject({x: -1, y: -1, image: createImage(background)}),
+    new GenericObject({x: -1, y: -1, image: createImage(hills)})
+]
 
 const keys = {
     right: {
@@ -78,6 +106,11 @@ function animate() {
     requestAnimationFrame(animate)
     c.fillStyle = 'white'
     c.fillRect(0,0, canvas.width, canvas.height)
+
+    genericObjects.forEach(genericObject => {
+        genericObject.draw()
+    })
+
     platforms.forEach(platform => {
         platform.draw()
     })
@@ -94,9 +127,15 @@ function animate() {
             platforms.forEach(platform => {
                 platform.position.x -= 5
             })
+            genericObjects.forEach(genericObject => {
+                genericObject.position.x -= 3
+            })
         } else if (keys.left.pressed) {
             platforms.forEach(platform => {
                 platform.position.x += 5
+            })
+            genericObjects.forEach(genericObject => {
+                genericObject.position.x += 3
             })
         }
     }
